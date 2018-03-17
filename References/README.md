@@ -1,0 +1,10 @@
+ - Naive matrix multiplications
+ - Strassen Multiplication
+ - Naive inversion
+ - Strassen's Inversion with Naive
+ - Strassen's Inversion with Multiplication
+ - LU for inversion
+ - QR decomposition
+ - Gaussian Elimination
+ - Gauss - Joardan Elimination
+ - pivoting and partial pivoting and no pivoting
