@@ -1,9 +1,14 @@
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
 class Matrix{
 public:
 
     int rows;
     int cols;
-    double** mat;
+    vector<vector<double> > mat;
 
     Matrix(int, int, double = 0);
     void randomize(void);

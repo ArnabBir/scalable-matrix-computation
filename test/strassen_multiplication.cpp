@@ -4,6 +4,7 @@
 #include <iostream>
 #include <stdio.h>
 #include <math.h>
+#include<unistd.h>
 #include "../src/matrix/matrix.cpp"
 #include "../src/matmul/matmul.cpp"
 
@@ -21,16 +22,27 @@ int main(){
     cout<<"Matrix 2 : "<<endl;
     m2.display_matrix();
 
-    matmul multiplier = matmul(true);
+    //matmul multiplier = matmul(true);
+    int start_naive_multiplication = clock();
+    Matrix m = m1.multiply(m2);
+    sleep(1);
+    int stop_naive_multiplication = clock();
     
-    Matrix m = multiplier.naive_multiplication(m1, m2);
+    sleep(1);
     cout<<"Product Matrix : "<<endl;
     m.display_matrix();
-
+    cout<<start_naive_multiplication<<" "<<stop_naive_multiplication<<endl;
+    cout<<"Time = "<<(stop_naive_multiplication - start_naive_multiplication)/double(CLOCKS_PER_SEC)*1000<<endl;
+    sleep(1);
+    int start_strassen_multiply = clock();
     Matrix m_ = m1.strassen_multiply(m2);
+    int stop_strassen_multiply = clock();
+    
     cout<<"Strassen Product Matrix : "<<endl;
     m_.display_matrix();
-
+    cout<<start_strassen_multiply<<" "<<stop_strassen_multiply<<endl;
+    cout<<"Time = "<<(stop_strassen_multiply - start_strassen_multiply)/double(CLOCKS_PER_SEC)*1000<<endl;
+    
     //double a[5][5] = {{1, 2, 3, 4, 5}, {1, 2, 3, 4, 5}, {1, 2, 3, 4, 5},{1, 2, 3, 4, 5},{1, 2, 3, 4, 5}};
     //double b[5][5] = {{1, 1, 1, 1, 1}, {1, 1, 1, 1, 1}, {1, 1, 1, 1, 1},{1, 1, 1, 1, 1},{1, 1, 1, 1, 1}};
     

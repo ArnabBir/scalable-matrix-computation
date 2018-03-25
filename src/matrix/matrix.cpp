@@ -6,9 +6,6 @@
 
 using namespace std;
 
-int SZ = 100;
-
-
 //------------------------------------------------------------------
 //           Constructor for the matrix class             
 //-----------------------------------------------------------------
@@ -16,15 +13,16 @@ Matrix::Matrix(int a=0, int b=0, double val)
 {
     rows = a;
     cols = b;
-    mat = new double*[rows];
+    
+    vector<vector <double> > temp_mat; 
+    
     for(int i = 0; i < rows; ++i)
     {
-        mat[i] = new double[cols];
-        for(int j = 0; j < cols; j++)
-        {
-            mat[i][j] = val;
-        }
+        vector<double> v(cols);
+        temp_mat.push_back(v);
     }
+    
+    mat = temp_mat;
 }
 
 //------------------------------------------------------------------
@@ -367,10 +365,12 @@ Matrix Matrix::multiply(Matrix other)
 
 //------------------------------------------------------------------
 //           Multiply matrices using strassen's algorithm          
-//-----------------------------------------------------------------
+//------------------------------------------------------------------
 
-vector<vector<double> > add_matrix(vector<vector<double> > A, vector<vector<double> > B, vector<vector<double> > resultant, int n) {
+vector<vector<double> > add_matrix(vector<vector<double> > A, vector<vector<double> > B, int n) {
+    
     int i, j;
+    vector<vector<double> > resultant(n, vector<double>(n));
     for(i=0; i< n; i++) {
         for(j=0; j<n; j++)  resultant[i][j] = A[i][j] + B[i][j];
     }
@@ -378,8 +378,10 @@ vector<vector<double> > add_matrix(vector<vector<double> > A, vector<vector<doub
     return resultant;
 }
 
-vector<vector<double> > substract_matrix(vector<vector<double> > A, vector<vector<double> > B, vector<vector<double> > resultant, int n) {
+vector<vector<double> > substract_matrix(vector<vector<double> > A, vector<vector<double> > B, int n) {
+    
     int i, j;
+    vector<vector<double> > resultant(n, vector<double>(n));
     for(i=0; i< n; i++) {
         for(j=0; j<n; j++)  resultant[i][j] = A[i][j] - B[i][j];
     }
@@ -389,14 +391,7 @@ vector<vector<double> > substract_matrix(vector<vector<double> > A, vector<vecto
 
 int nextPowerOf2(int n)
 {
-    int p = 1;
-    if (n && !(n & (n - 1)))
-        return n;
- 
-    while (p < n) 
-        p <<= 1;
-     
-    return p;
+    return pow(2, int(ceil(log2(n))));
 }
 
 vector<vector<double> > strassen(vector<vector<double> > A, vector<vector<double> > B, vector<vector<double> > C, int n) {
@@ -406,27 +401,27 @@ vector<vector<double> > strassen(vector<vector<double> > A, vector<vector<double
     }
     else{
         int divide_  =(n/2),i,j;
-        vector<std::vector<double> > A11(SZ, std::vector<double>(SZ));
-        vector<std::vector<double> > A12(SZ, vector<double>(SZ));
-        vector<std::vector<double> > A21(SZ, vector<double>(SZ));
-        vector<std::vector<double> > A22(SZ, vector<double>(SZ));
-        vector<std::vector<double> > B11(SZ, vector<double>(SZ));
-        vector<std::vector<double> > B12(SZ, vector<double>(SZ));
-        vector<std::vector<double> > B21(SZ, vector<double>(SZ));
-        vector<std::vector<double> > B22(SZ, vector<double>(SZ));
-        vector<std::vector<double> > C11(SZ, vector<double>(SZ));
-        vector<std::vector<double> > C12(SZ, vector<double>(SZ));
-        vector<std::vector<double> > C21(SZ, vector<double>(SZ));
-        vector<std::vector<double> > C22(SZ, vector<double>(SZ));
-        vector<std::vector<double> > P1(SZ, vector<double>(SZ));
-        vector<std::vector<double> > P2(SZ, vector<double>(SZ));
-        vector<std::vector<double> > P3(SZ, vector<double>(SZ));
-        vector<std::vector<double> > P4(SZ, vector<double>(SZ));
-        vector<std::vector<double> > P5(SZ, vector<double>(SZ));
-        vector<std::vector<double> > P6(SZ, vector<double>(SZ));
-        vector<std::vector<double> > P7(SZ, vector<double>(SZ));
-        vector<std::vector<double> > AResultant(SZ, vector<double>(SZ));
-        vector<std::vector<double> > BResultant(SZ, vector<double>(SZ));
+        vector<vector<double> > A11(n, vector<double>(n));
+        vector<vector<double> > A12(n, vector<double>(n));
+        vector<vector<double> > A21(n, vector<double>(n));
+        vector<vector<double> > A22(n, vector<double>(n));
+        vector<vector<double> > B11(n, vector<double>(n));
+        vector<vector<double> > B12(n, vector<double>(n));
+        vector<vector<double> > B21(n, vector<double>(n));
+        vector<vector<double> > B22(n, vector<double>(n));
+        vector<vector<double> > C11(n, vector<double>(n));
+        vector<vector<double> > C12(n, vector<double>(n));
+        vector<vector<double> > C21(n, vector<double>(n));
+        vector<vector<double> > C22(n, vector<double>(n));
+        vector<vector<double> > P1(n, vector<double>(n));
+        vector<vector<double> > P2(n, vector<double>(n));
+        vector<vector<double> > P3(n, vector<double>(n));
+        vector<vector<double> > P4(n, vector<double>(n));
+        vector<vector<double> > P5(n, vector<double>(n));
+        vector<vector<double> > P6(n, vector<double>(n));
+        vector<vector<double> > P7(n, vector<double>(n));
+        vector<vector<double> > AResultant(n, vector<double>(n));
+        vector<vector<double> > BResultant(n, vector<double>(n));
         
         for (i = 0; i < divide_; i++)        {
             for (j = 0; j < divide_; j++) {
@@ -442,41 +437,41 @@ vector<vector<double> > strassen(vector<vector<double> > A, vector<vector<double
             }
         }
         
-        AResultant = add_matrix(A11, A22, AResultant, divide_);   // a11 + a22
-        BResultant = add_matrix(B11, B22, BResultant, divide_);   // b11 + b22
+        AResultant = add_matrix(A11, A22, divide_);   // a11 + a22
+        BResultant = add_matrix(B11, B22, divide_);   // b11 + b22
         P1 = strassen(AResultant, BResultant, P1, divide_);  // p1 = (a11+a22) * (b11+b22)
         
-        AResultant = add_matrix(A21, A22, AResultant, divide_);   // a21 + a22
+        AResultant = add_matrix(A21, A22, divide_);   // a21 + a22
         P2 = strassen(AResultant, B11, P2, divide_); // p2 = (a21+a22) * (b11)
         
-        BResultant = substract_matrix(B12, B22, BResultant, divide_); // b12 - b22
+        BResultant = substract_matrix(B12, B22, divide_); // b12 - b22
         P3 = strassen(A11, BResultant, P3, divide_); // p3 = (a11) * (b12 - b22)
         
-        BResultant = substract_matrix(B21, B11, BResultant, divide_); // b21 - b11
+        BResultant = substract_matrix(B21, B11, divide_); // b21 - b11
         P4 = strassen(A22, BResultant, P4, divide_); // p4 = (a22) * (b21 - b11)
         
-        AResultant = add_matrix(A11, A12, AResultant, divide_); // a11 + a12
+        AResultant = add_matrix(A11, A12, divide_); // a11 + a12
         P5 = strassen(AResultant, B22, P5, divide_); // p5 = (a11+a12) * (b22)
         
-        AResultant = substract_matrix(A21, A11, AResultant, divide_); // a21 - a11
-        BResultant = add_matrix(B11, B12, BResultant, divide_); // b11 + b12
+        AResultant = substract_matrix(A21, A11, divide_); // a21 - a11
+        BResultant = add_matrix(B11, B12, divide_); // b11 + b12
         P6 = strassen(AResultant, BResultant, P6, divide_); // p6 = (a21-a11) * (b11+b12)
         
-        AResultant = substract_matrix(A12, A22, AResultant, divide_); // a12 - a22
-        BResultant = add_matrix(B21, B22, BResultant, divide_); // b21 + b22
+        AResultant = substract_matrix(A12, A22, divide_); // a12 - a22
+        BResultant = add_matrix(B21, B22, divide_); // b21 + b22
         P7 = strassen(AResultant, BResultant, P7, divide_); // p7 = (a12-a22) * (b21+b22)
         
         
-        C12 = add_matrix(P3, P5, C12, divide_); // c12 = p3 + p5
-        C21 = add_matrix(P2, P4, C21, divide_); // c21 = p2 + p4
+        C12 = add_matrix(P3, P5, divide_); // c12 = p3 + p5
+        C21 = add_matrix(P2, P4, divide_); // c21 = p2 + p4
         
-        AResultant = add_matrix(P1, P4, AResultant, divide_); // p1 + p4
-        BResultant = add_matrix(AResultant, P7, BResultant, divide_); // p1 + p4 + p7
-        C11 = substract_matrix(BResultant, P5, C11, divide_); // c11 = p1 + p4 - p5 + p7
+        AResultant = add_matrix(P1, P4, divide_); // p1 + p4
+        BResultant = add_matrix(AResultant, P7, divide_); // p1 + p4 + p7
+        C11 = substract_matrix(BResultant, P5, divide_); // c11 = p1 + p4 - p5 + p7
         
-        AResultant = add_matrix(P1, P3, AResultant, divide_); // p1 + p3
-        BResultant = add_matrix(AResultant, P6, BResultant, divide_); // p1 + p3 + p6
-        C22 = substract_matrix(BResultant, P2, C22, divide_); // c22 = p1 + p3 - p2 + p6
+        AResultant = add_matrix(P1, P3, divide_); // p1 + p3
+        BResultant = add_matrix(AResultant, P6, divide_); // p1 + p3 + p6
+        C22 = substract_matrix(BResultant, P2, divide_); // c22 = p1 + p3 - p2 + p6
 
         for (i = 0; i < divide_ ; i++)   {
             for (j = 0 ; j < divide_ ; j++)  {
@@ -496,9 +491,9 @@ Matrix Matrix::strassen_multiply(Matrix m2){
     Matrix m(rows, cols, 0.0);
     int rows_ = nextPowerOf2(rows);
 
-    vector<std::vector<double> > A(rows_, vector<double>(rows_));
-    vector<std::vector<double> > B(rows_, vector<double>(rows_));
-    vector<std::vector<double> > C(rows_, vector<double>(rows_));
+    vector<vector<double> > A(rows_, vector<double>(rows_));
+    vector<vector<double> > B(rows_, vector<double>(rows_));
+    vector<vector<double> > C(rows_, vector<double>(rows_));
 
     for(int i = 0; i < rows; ++i){
         for(int j = 0; j < cols; ++j){
@@ -509,8 +504,6 @@ Matrix Matrix::strassen_multiply(Matrix m2){
 
     int dim = rows, count_rows = rows, cont = 0;
     
-    cout<<"Hello"<<endl;
-
     if(dim > 1) {
         while(dim>=2) {
             dim/=2;
@@ -527,7 +520,6 @@ Matrix Matrix::strassen_multiply(Matrix m2){
                         B[i][j] = 0.0;
     }}}}}
 
-    SZ = count_rows;
     C = strassen(A, B, C, count_rows);
 
     for(int i = 0; i < rows; ++i){
