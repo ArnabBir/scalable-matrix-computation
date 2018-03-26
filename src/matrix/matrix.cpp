@@ -6,6 +6,11 @@
 
 using namespace std;
 
+int nextPowerOf2(int n)
+{
+    return pow(2, int(ceil(log2(n))));
+}
+
 //------------------------------------------------------------------
 //           Constructor for the matrix class             
 //-----------------------------------------------------------------
@@ -13,12 +18,14 @@ Matrix::Matrix(int a=0, int b=0, double val)
 {
     rows = a;
     cols = b;
+    int rows_ = nextPowerOf2(rows);
+    int cols_ = nextPowerOf2(cols);
     
     vector<vector <double> > temp_mat; 
     
-    for(int i = 0; i < rows; ++i)
+    for(int i = 0; i < rows_; ++i)
     {
-        vector<double> v(cols);
+        vector<double> v(cols_, val);
         temp_mat.push_back(v);
     }
     
@@ -62,7 +69,7 @@ void Matrix::display_matrix()
         for(int j = 0; j<cols; j++)
         {
             //cout<<mat[i][j]<<"\t";
-            printf("%2.4lf  ", mat[i][j]);
+            printf("% 05.4lf  ", mat[i][j]);
         }
         cout<<endl;
     }
@@ -189,21 +196,21 @@ void Matrix::scale_A(int *leading_0s, Matrix  & a)
 //---------------------------------------------------------------------------
 //           Function definition to convert to row reduced form                               
 //---------------------------------------------------------------------------
-int* Matrix::row_reduced(Matrix & a)
+int* Matrix::row_reduced()
 {
     int i, next_row = 1, grp, p, r, j, *leading_0s, t, m, rank;
-    leading_0s = new int[a.rows];
-    update_leading_0s(leading_0s, a);
-    pivot_rearrange(leading_0s, a);
+    leading_0s = new int[rows];
+    update_leading_0s(leading_0s, * this);
+    pivot_rearrange(leading_0s, * this);
 
-    if(fabs(a.mat[0][0]) < 0.00001)
+    if(fabs(mat[0][0]) < 0.00001)
     {
         cout << "Not a valid matrix as pivot element is 0" << endl;
         return NULL; 
     }
 
-    update_leading_0s(leading_0s, a);
-    scale_A(leading_0s, a);
+    update_leading_0s(leading_0s, * this);
+    scale_A(leading_0s, * this);
     
    //for(i = 0; i < a.rows; ++i) cout<<leading_0s[i]<<endl;
 
@@ -215,7 +222,7 @@ int* Matrix::row_reduced(Matrix & a)
         for( i = 0; i < rows; ++i)
         {
             p = 0;
-            while(leading_0s[i+p] == leading_0s[i+p+1] && (i+p+1) < a.rows)
+            while(leading_0s[i+p] == leading_0s[i+p+1] && (i+p+1) < rows)
             {
                 grp++;
                 p++;
@@ -225,25 +232,25 @@ int* Matrix::row_reduced(Matrix & a)
             {
                 while(grp != 0)
                 {
-                    for(j = 0; j < a.cols; ++j) a.mat[i+grp][j] = a.mat[i+grp][j] - a.mat[i][j];
+                    for(j = 0; j < cols; ++j) mat[i+grp][j] = mat[i+grp][j] - mat[i][j];
                     grp--;
                 }
                 break;
             }
         }   
 
-        update_leading_0s(leading_0s, a);
-        pivot_rearrange(leading_0s, a);
-        update_leading_0s(leading_0s, a);
-        scale_A(leading_0s, a);
+        update_leading_0s(leading_0s, * this);
+        pivot_rearrange(leading_0s, * this);
+        update_leading_0s(leading_0s, * this);
+        scale_A(leading_0s, * this);
 
         next_row = 0;
 
-        for(r = 0; r < a.rows ; ++r)
+        for(r = 0; r < rows ; ++r)
         {
-            if(leading_0s[r] == leading_0s[r+1] && r+1 < a.rows)
+            if(leading_0s[r] == leading_0s[r+1] && r+1 < rows)
             {
-                if(leading_0s[r] != a.cols) next_row = 1;
+                if(leading_0s[r] != cols) next_row = 1;
             }
         }
 
@@ -257,7 +264,7 @@ int* Matrix::row_reduced(Matrix & a)
 int Matrix::rank()
 {
     Matrix a = this->copy();
-    int *leading_0s = row_reduced(a);
+    int *leading_0s = row_reduced();
     int rank = 0;
     for (int i = 0; i < a.rows; ++i)
     {
@@ -371,34 +378,25 @@ Matrix Matrix::multiply(Matrix other)
 //           Multiply matrices using strassen's algorithm          
 //------------------------------------------------------------------
 
-vector<vector<double> > add_matrix(vector<vector<double> > A, vector<vector<double> > B, int n) {
+void add_matrix(vector<vector<double> > A, vector<vector<double> > B, vector<vector<double> > & resultant, int n) {
     
     int i, j;
-    vector<vector<double> > resultant(n, vector<double>(n));
-    for(i=0; i< n; i++) {
-        for(j=0; j<n; j++)  resultant[i][j] = A[i][j] + B[i][j];
+    for(i=0; i< n; ++i) {
+        for(j=0; j<n; ++j)  resultant[i][j] = A[i][j] + B[i][j];
     }
 
-    return resultant;
 }
 
-vector<vector<double> > substract_matrix(vector<vector<double> > A, vector<vector<double> > B, int n) {
+void substract_matrix(vector<vector<double> > A, vector<vector<double> > B, vector<vector<double> > & resultant, int n) {
     
     int i, j;
-    vector<vector<double> > resultant(n, vector<double>(n));
-    for(i=0; i< n; i++) {
-        for(j=0; j<n; j++)  resultant[i][j] = A[i][j] - B[i][j];
+    for(i=0; i< n; ++i) {
+        for(j=0; j<n; ++j)  resultant[i][j] = A[i][j] - B[i][j];
     }
 
-    return resultant;
 }
 
-int nextPowerOf2(int n)
-{
-    return pow(2, int(ceil(log2(n))));
-}
-
-vector<vector<double> > strassen(vector<vector<double> > A, vector<vector<double> > B, vector<vector<double> > C, int n) {
+void strassen(vector<vector<double> > A, vector<vector<double> > B, vector<vector<double> > & C, int n) {
 
     if(n== 1) {
         C[0][0] = A[0][0] * B[0][0];
@@ -441,41 +439,41 @@ vector<vector<double> > strassen(vector<vector<double> > A, vector<vector<double
             }
         }
         
-        AResultant = add_matrix(A11, A22, divide_);   // a11 + a22
-        BResultant = add_matrix(B11, B22, divide_);   // b11 + b22
-        P1 = strassen(AResultant, BResultant, P1, divide_);  // p1 = (a11+a22) * (b11+b22)
+        add_matrix(A11, A22, AResultant, divide_);   // a11 + a22
+        add_matrix(B11, B22, BResultant, divide_);   // b11 + b22
+        strassen(AResultant, BResultant, P1, divide_);  // p1 = (a11+a22) * (b11+b22)
         
-        AResultant = add_matrix(A21, A22, divide_);   // a21 + a22
-        P2 = strassen(AResultant, B11, P2, divide_); // p2 = (a21+a22) * (b11)
+        add_matrix(A21, A22, AResultant, divide_);   // a21 + a22
+        strassen(AResultant, B11, P2, divide_); // p2 = (a21+a22) * (b11)
         
-        BResultant = substract_matrix(B12, B22, divide_); // b12 - b22
-        P3 = strassen(A11, BResultant, P3, divide_); // p3 = (a11) * (b12 - b22)
+        substract_matrix(B12, B22, BResultant, divide_); // b12 - b22
+        strassen(A11, BResultant, P3, divide_); // p3 = (a11) * (b12 - b22)
         
-        BResultant = substract_matrix(B21, B11, divide_); // b21 - b11
-        P4 = strassen(A22, BResultant, P4, divide_); // p4 = (a22) * (b21 - b11)
+        substract_matrix(B21, B11, BResultant, divide_); // b21 - b11
+        strassen(A22, BResultant, P4, divide_); // p4 = (a22) * (b21 - b11)
         
-        AResultant = add_matrix(A11, A12, divide_); // a11 + a12
-        P5 = strassen(AResultant, B22, P5, divide_); // p5 = (a11+a12) * (b22)
+        add_matrix(A11, A12, AResultant, divide_); // a11 + a12
+        strassen(AResultant, B22, P5, divide_); // p5 = (a11+a12) * (b22)
         
-        AResultant = substract_matrix(A21, A11, divide_); // a21 - a11
-        BResultant = add_matrix(B11, B12, divide_); // b11 + b12
-        P6 = strassen(AResultant, BResultant, P6, divide_); // p6 = (a21-a11) * (b11+b12)
+        substract_matrix(A21, A11, AResultant, divide_); // a21 - a11
+        add_matrix(B11, B12, BResultant, divide_); // b11 + b12
+        strassen(AResultant, BResultant, P6, divide_); // p6 = (a21-a11) * (b11+b12)
         
-        AResultant = substract_matrix(A12, A22, divide_); // a12 - a22
-        BResultant = add_matrix(B21, B22, divide_); // b21 + b22
-        P7 = strassen(AResultant, BResultant, P7, divide_); // p7 = (a12-a22) * (b21+b22)
+        substract_matrix(A12, A22, AResultant, divide_); // a12 - a22
+        add_matrix(B21, B22, BResultant, divide_); // b21 + b22
+        strassen(AResultant, BResultant, P7, divide_); // p7 = (a12-a22) * (b21+b22)
         
         
-        C12 = add_matrix(P3, P5, divide_); // c12 = p3 + p5
-        C21 = add_matrix(P2, P4, divide_); // c21 = p2 + p4
+        add_matrix(P3, P5, C12, divide_); // c12 = p3 + p5
+        add_matrix(P2, P4, C21, divide_); // c21 = p2 + p4
         
-        AResultant = add_matrix(P1, P4, divide_); // p1 + p4
-        BResultant = add_matrix(AResultant, P7, divide_); // p1 + p4 + p7
-        C11 = substract_matrix(BResultant, P5, divide_); // c11 = p1 + p4 - p5 + p7
+        add_matrix(P1, P4, AResultant, divide_); // p1 + p4
+        add_matrix(AResultant, P7, BResultant, divide_); // p1 + p4 + p7
+        substract_matrix(BResultant, P5, C11, divide_); // c11 = p1 + p4 - p5 + p7
         
-        AResultant = add_matrix(P1, P3, divide_); // p1 + p3
-        BResultant = add_matrix(AResultant, P6, divide_); // p1 + p3 + p6
-        C22 = substract_matrix(BResultant, P2, divide_); // c22 = p1 + p3 - p2 + p6
+        add_matrix(P1, P3, AResultant, divide_); // p1 + p3
+        add_matrix(AResultant, P6, BResultant, divide_); // p1 + p3 + p6
+        substract_matrix(BResultant, P2, C22, divide_); // c22 = p1 + p3 - p2 + p6
 
         for (i = 0; i < divide_ ; i++)   {
             for (j = 0 ; j < divide_ ; j++)  {
@@ -486,8 +484,6 @@ vector<vector<double> > strassen(vector<vector<double> > A, vector<vector<double
             }
         }
     }
-
-    return C;
 }
 
 Matrix Matrix::strassen_multiply(Matrix m2){
@@ -495,45 +491,68 @@ Matrix Matrix::strassen_multiply(Matrix m2){
     Matrix m(rows, cols, 0.0);
     int rows_ = nextPowerOf2(rows);
 
-    vector<vector<double> > A(rows_, vector<double>(rows_));
-    vector<vector<double> > B(rows_, vector<double>(rows_));
-    vector<vector<double> > C(rows_, vector<double>(rows_));
-
-    for(int i = 0; i < rows; ++i){
-        for(int j = 0; j < cols; ++j){
-            A[i][j] = mat[i][j];
-            B[i][j] = m2.mat[i][j];
-        }
-    }
-
     int dim = rows, count_rows = rows, cont = 0;
     
     if(dim > 1) {
-        while(dim>=2) {
-            dim/=2;
-            cont++;
+         while(dim>=2) {
+             dim/=2;
+             cont++;
         }
         
         dim = count_rows;
         if(dim != (pow(2.0,cont))) {
             count_rows = pow(2.0,cont+1);
-            for(int i=0; i<count_rows; i++)  {
-                for(int j=0; j<count_rows; j++)  {
-                    if((i>=dim) || (j>=dim))  {
-                        A[i][j] = 0.0;
-                        B[i][j] = 0.0;
-    }}}}}
+    }}
 
-    C = strassen(A, B, C, count_rows);
-
-    for(int i = 0; i < rows; ++i){
-        for(int j = 0; j < rows; ++j){
-            m.mat[i][j] = C[i][j];
-        }
-    }
-
+    strassen(mat, m2.mat, m.mat, count_rows);
+    
     return m; 
 }
+
+// Matrix Matrix::strassen_multiply(Matrix m2){
+
+//     Matrix m(rows, cols, 0.0);
+//     int rows_ = nextPowerOf2(rows);
+
+//     vector<vector<double> > A(rows_, vector<double>(rows_));
+//     vector<vector<double> > B(rows_, vector<double>(rows_));
+//     vector<vector<double> > C(rows_, vector<double>(rows_));
+
+//     for(int i = 0; i < rows; ++i){
+//         for(int j = 0; j < cols; ++j){
+//             A[i][j] = mat[i][j];
+//             B[i][j] = m2.mat[i][j];
+//         }
+//     }
+
+//     int dim = rows, count_rows = rows, cont = 0;
+    
+//     if(dim > 1) {
+//         while(dim>=2) {
+//             dim/=2;
+//             cont++;
+//         }
+        
+//         dim = count_rows;
+//         if(dim != (pow(2.0,cont))) {
+//             count_rows = pow(2.0,cont+1);
+//             for(int i=0; i<count_rows; i++)  {
+//                 for(int j=0; j<count_rows; j++)  {
+//                     if((i>=dim) || (j>=dim))  {
+//                         A[i][j] = 0.0;
+//                         B[i][j] = 0.0;
+//     }}}}}
+
+//     strassen(A, B, C, count_rows);
+
+//     for(int i = 0; i < rows; ++i){
+//         for(int j = 0; j < rows; ++j){
+//             m.mat[i][j] = C[i][j];
+//         }
+//     }
+
+//     return m; 
+// }
 
 //------------------------------------------------------------------
 //           Function to find the naive inverse              

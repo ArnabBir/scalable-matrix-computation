@@ -16,7 +16,7 @@ public:
     void display_matrix(void);
     Matrix copy();
     Matrix transpose();
-    int* row_reduced(Matrix &);
+    int* row_reduced();
     int rank(void);
     double determinant();
     Matrix inverse();
