@@ -31,5 +31,7 @@ public:
     void update_leading_0s(int *, Matrix);
     Matrix strassen_multiply(Matrix);
     void gauss_joardan_elimination();
+    void LU(Matrix & L, Matrix & U);
+
 
 }; 

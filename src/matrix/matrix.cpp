@@ -676,5 +676,44 @@ Matrix Matrix::gauss_joardan_inverse(){
 
 }
 
+//------------------------------------------------------------------
+//           Function for LU decomposition              
+//------------------------------------------------------------------
+
+void Matrix::LU(Matrix & L, Matrix & U){
+
+    for (int i = 0; i < rows; i++) {
+
+        for (int j = 0; j < rows; j++){
+
+            if (j < i)
+                L.mat[j][i] = 0;
+            else{
+
+                L.mat[j][i] = mat[j][i];
+                for (int k = 0; k < i; k++){
+
+                    L.mat[j][i] = L.mat[j][i] - L.mat[j][k] * L.mat[k][i];
+                }
+            }
+        }
+
+        for (int j = 0; j < rows; j++){
+
+            if (j < i)
+                U.mat[i][j] = 0;
+            else if (j == i)
+                U.mat[i][j] = 1;
+            else{
+
+                U.mat[i][j] = mat[i][j] / L.mat[i][i];
+                for (int k = 0; k < i; k++){
+                    
+                    U.mat[i][j] = U.mat[i][j] - ((L.mat[i][k] * U.mat[k][j]) / L.mat[i][i]);
+                }
+            }
+        }
+    }
+}
 
 
