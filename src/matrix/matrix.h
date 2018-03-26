@@ -17,6 +17,7 @@ public:
     Matrix copy();
     Matrix transpose();
     int* row_reduced();
+    void gaussian_elimination();
     int rank(void);
     double determinant();
     Matrix inverse();

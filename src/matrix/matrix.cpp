@@ -439,41 +439,41 @@ void strassen(vector<vector<double> > A, vector<vector<double> > B, vector<vecto
             }
         }
         
-        add_matrix(A11, A22, AResultant, divide_);   // a11 + a22
-        add_matrix(B11, B22, BResultant, divide_);   // b11 + b22
-        strassen(AResultant, BResultant, P1, divide_);  // p1 = (a11+a22) * (b11+b22)
+        add_matrix(A11, A22, AResultant, divide_);   // A11 + A22
+        add_matrix(B11, B22, BResultant, divide_);   // B11 + B22
+        strassen(AResultant, BResultant, P1, divide_);  // P1 = (A11+A22) * (B11+B22)
         
-        add_matrix(A21, A22, AResultant, divide_);   // a21 + a22
-        strassen(AResultant, B11, P2, divide_); // p2 = (a21+a22) * (b11)
+        add_matrix(A21, A22, AResultant, divide_);   // A21 + A22
+        strassen(AResultant, B11, P2, divide_); // P2 = (A21+A22) * (B11)
         
-        substract_matrix(B12, B22, BResultant, divide_); // b12 - b22
-        strassen(A11, BResultant, P3, divide_); // p3 = (a11) * (b12 - b22)
+        substract_matrix(B12, B22, BResultant, divide_); // B12 - B22
+        strassen(A11, BResultant, P3, divide_); // P3 = (A11) * (B12 - B22)
         
-        substract_matrix(B21, B11, BResultant, divide_); // b21 - b11
-        strassen(A22, BResultant, P4, divide_); // p4 = (a22) * (b21 - b11)
+        substract_matrix(B21, B11, BResultant, divide_); // B21 - B11
+        strassen(A22, BResultant, P4, divide_); // P4 = (A22) * (B21 - B11)
         
-        add_matrix(A11, A12, AResultant, divide_); // a11 + a12
-        strassen(AResultant, B22, P5, divide_); // p5 = (a11+a12) * (b22)
+        add_matrix(A11, A12, AResultant, divide_); // A11 + A12
+        strassen(AResultant, B22, P5, divide_); // P5 = (A11+A12) * (B22)
         
-        substract_matrix(A21, A11, AResultant, divide_); // a21 - a11
-        add_matrix(B11, B12, BResultant, divide_); // b11 + b12
-        strassen(AResultant, BResultant, P6, divide_); // p6 = (a21-a11) * (b11+b12)
+        substract_matrix(A21, A11, AResultant, divide_); // A21 - A11
+        add_matrix(B11, B12, BResultant, divide_); // B11 + B12
+        strassen(AResultant, BResultant, P6, divide_); // p6 = (A21-A11) * (B11+B12)
         
-        substract_matrix(A12, A22, AResultant, divide_); // a12 - a22
-        add_matrix(B21, B22, BResultant, divide_); // b21 + b22
-        strassen(AResultant, BResultant, P7, divide_); // p7 = (a12-a22) * (b21+b22)
+        substract_matrix(A12, A22, AResultant, divide_); // A12 - A22
+        add_matrix(B21, B22, BResultant, divide_); // B21 + B22
+        strassen(AResultant, BResultant, P7, divide_); // P7 = (A12-A22) * (B21+B22)
         
         
-        add_matrix(P3, P5, C12, divide_); // c12 = p3 + p5
-        add_matrix(P2, P4, C21, divide_); // c21 = p2 + p4
+        add_matrix(P3, P5, C12, divide_); // C12 = P3 + P5
+        add_matrix(P2, P4, C21, divide_); // C21 = P2 + P4
         
-        add_matrix(P1, P4, AResultant, divide_); // p1 + p4
-        add_matrix(AResultant, P7, BResultant, divide_); // p1 + p4 + p7
-        substract_matrix(BResultant, P5, C11, divide_); // c11 = p1 + p4 - p5 + p7
+        add_matrix(P1, P4, AResultant, divide_); // P1 + P4
+        add_matrix(AResultant, P7, BResultant, divide_); // P1 + P4 + P7
+        substract_matrix(BResultant, P5, C11, divide_); // C11 = P1 + P4 - P5 + P7
         
-        add_matrix(P1, P3, AResultant, divide_); // p1 + p3
-        add_matrix(AResultant, P6, BResultant, divide_); // p1 + p3 + p6
-        substract_matrix(BResultant, P2, C22, divide_); // c22 = p1 + p3 - p2 + p6
+        add_matrix(P1, P3, AResultant, divide_); // P1 + P3
+        add_matrix(AResultant, P6, BResultant, divide_); // P1 + P3 + P6
+        substract_matrix(BResultant, P2, C22, divide_); // C22 = P1 + P3 - P2 + P6
 
         for (i = 0; i < divide_ ; i++)   {
             for (j = 0 ; j < divide_ ; j++)  {
@@ -553,6 +553,16 @@ Matrix Matrix::strassen_multiply(Matrix m2){
 
 //     return m; 
 // }
+
+//------------------------------------------------------------------
+//           Function to inpmelent Gaussian Elimination              
+//------------------------------------------------------------------
+
+void Matrix::gaussian_elimination(){
+
+    row_reduced();
+}
+
 
 //------------------------------------------------------------------
 //           Function to find the naive inverse              
