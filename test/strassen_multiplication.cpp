@@ -12,12 +12,12 @@ using namespace std;
 
 int main(){
     
-    Matrix  m1(50, 50, 0);
+    Matrix  m1(10, 10, 0);
     m1.randomize();
     cout<<"Matrix 1 : "<<endl;
     m1.display_matrix();
 
-    Matrix  m2(50, 50, 0);
+    Matrix  m2(10, 10, 0);
     m2.randomize();
     cout<<"Matrix 2 : "<<endl;
     m2.display_matrix();
@@ -33,7 +33,9 @@ int main(){
     m.display_matrix();
     cout<<start_naive_multiplication<<" "<<stop_naive_multiplication<<endl;
     cout<<"Time = "<<(stop_naive_multiplication - start_naive_multiplication)/double(CLOCKS_PER_SEC)*1000<<endl;
+    
     sleep(1);
+
     int start_strassen_multiply = clock();
     Matrix m_ = m1.strassen_multiply(m2);
     int stop_strassen_multiply = clock();
