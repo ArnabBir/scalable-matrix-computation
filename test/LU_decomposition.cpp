@@ -16,7 +16,7 @@ int main(){
     cout<<"Matrix 1 : "<<endl;
     m.display_matrix();
 
-    m.LU(L, U);
+    m.LU_(L, U);
     cout<<"Decomposed L matrix : "<<endl;
     L.display_matrix();
 

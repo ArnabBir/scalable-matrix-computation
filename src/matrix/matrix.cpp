@@ -716,4 +716,28 @@ void Matrix::LU(Matrix & L, Matrix & U){
     }
 }
 
+void Matrix::LU_(Matrix & L, Matrix & U){
 
+    double sum;
+    //********** LU decomposition *****//
+    for(int k=1;k<= rows;k++)
+    {
+        U.mat[k-1][k-1]=1;
+        for(int i=k;i<=rows;i++)
+        {
+            sum=0;
+            for(int p=1; p<=k-1; p++)
+                sum += L.mat[i-1][p-1] * U.mat[p-1][k-1];
+            L.mat[i-1][k-1] = mat[i-1][k-1]-sum;
+        }
+
+        for(int j=k+1;j<=rows;j++)
+        {
+            sum = 0;
+            for(int p=1;p<=k-1;p++)
+                sum += L.mat[k-1][p-1] * U.mat[p-1][j-1];
+            U.mat[k-1][j-1] = (mat[k-1][j-1] - sum) / L.mat[k-1][k-1];
+        }
+    }
+
+}
