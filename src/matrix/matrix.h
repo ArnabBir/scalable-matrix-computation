@@ -16,7 +16,7 @@ public:
     void display_matrix(void);
     Matrix copy();
     Matrix transpose();
-    int* row_reduced(Matrix);
+    int* row_reduced(Matrix &);
     int rank(void);
     double determinant();
     Matrix inverse();
@@ -24,8 +24,8 @@ public:
     Matrix readjust();
     Matrix horzcat(Matrix);
     Matrix vertcat(Matrix);
-    void scale_A(int *, Matrix);
-    void pivot_rearrange(int *, Matrix);
+    void scale_A(int *, Matrix &);
+    void pivot_rearrange(int *, Matrix &);
     void update_leading_0s(int *, Matrix);
     Matrix strassen_multiply(Matrix);
 

@@ -62,7 +62,7 @@ void Matrix::display_matrix()
         for(int j = 0; j<cols; j++)
         {
             //cout<<mat[i][j]<<"\t";
-            printf("%.4lf  ", mat[i][j]);
+            printf("%2.4lf  ", mat[i][j]);
         }
         cout<<endl;
     }
@@ -140,11 +140,11 @@ void Matrix::update_leading_0s(int *leading_0s, Matrix a)
 //-------------------------------------------------------------------
 // Function to rearrange arrange A such that pivot positions have 1               
 //-------------------------------------------------------------------
-void Matrix::pivot_rearrange(int *leading_0s, Matrix a)
+void Matrix::pivot_rearrange(int *leading_0s, Matrix & a)
 {
     int l, remrow, i, k, lastrow, large;
     double *rowtemn = new double[a.cols];
-    lastrow = rows-1;
+    lastrow = a.rows-1;
 
     for(l = 0; l < a.rows; ++l)
     {
@@ -172,7 +172,7 @@ void Matrix::pivot_rearrange(int *leading_0s, Matrix a)
 //---------------------------------------------------------------------------
 //           Function definition to scale a A                              
 //---------------------------------------------------------------------------
-void Matrix::scale_A(int *leading_0s, Matrix a)
+void Matrix::scale_A(int *leading_0s, Matrix  & a)
 {
     int i,j;
     double divisor;
@@ -182,17 +182,17 @@ void Matrix::scale_A(int *leading_0s, Matrix a)
         divisor = a.mat[i][leading_0s[i]];
         for(j = leading_0s[i]; j < a.cols; ++j)   a.mat[i][j] = a.mat[i][j]/ divisor;
     }
+
 }
 
 
 //---------------------------------------------------------------------------
 //           Function definition to convert to row reduced form                               
 //---------------------------------------------------------------------------
-int* Matrix::row_reduced(Matrix a)
+int* Matrix::row_reduced(Matrix & a)
 {
     int i, next_row = 1, grp, p, r, j, *leading_0s, t, m, rank;
     leading_0s = new int[a.rows];
-
     update_leading_0s(leading_0s, a);
     pivot_rearrange(leading_0s, a);
 
@@ -204,10 +204,14 @@ int* Matrix::row_reduced(Matrix a)
 
     update_leading_0s(leading_0s, a);
     scale_A(leading_0s, a);
+    
+   //for(i = 0; i < a.rows; ++i) cout<<leading_0s[i]<<endl;
 
     while(next_row == 1)
     {
+        
         grp = 0;
+        
         for( i = 0; i < rows; ++i)
         {
             p = 0;
