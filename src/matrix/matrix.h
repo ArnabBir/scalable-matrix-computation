@@ -21,6 +21,7 @@ public:
     int rank(void);
     double determinant();
     Matrix inverse();
+    Matrix gauss_joardan_inverse();
     Matrix multiply(Matrix);
     Matrix readjust();
     Matrix horzcat(Matrix);
@@ -29,5 +30,6 @@ public:
     void pivot_rearrange(int *, Matrix &);
     void update_leading_0s(int *, Matrix);
     Matrix strassen_multiply(Matrix);
+    void gauss_joardan_elimination();
 
 }; 

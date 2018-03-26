@@ -147,6 +147,7 @@ void Matrix::update_leading_0s(int *leading_0s, Matrix a)
 //-------------------------------------------------------------------
 // Function to rearrange arrange A such that pivot positions have 1               
 //-------------------------------------------------------------------
+
 void Matrix::pivot_rearrange(int *leading_0s, Matrix & a)
 {
     int l, remrow, i, k, lastrow, large;
@@ -403,27 +404,27 @@ void strassen(vector<vector<double> > A, vector<vector<double> > B, vector<vecto
     }
     else{
         int divide_  =(n/2),i,j;
-        vector<vector<double> > A11(n, vector<double>(n));
-        vector<vector<double> > A12(n, vector<double>(n));
-        vector<vector<double> > A21(n, vector<double>(n));
-        vector<vector<double> > A22(n, vector<double>(n));
-        vector<vector<double> > B11(n, vector<double>(n));
-        vector<vector<double> > B12(n, vector<double>(n));
-        vector<vector<double> > B21(n, vector<double>(n));
-        vector<vector<double> > B22(n, vector<double>(n));
-        vector<vector<double> > C11(n, vector<double>(n));
-        vector<vector<double> > C12(n, vector<double>(n));
-        vector<vector<double> > C21(n, vector<double>(n));
-        vector<vector<double> > C22(n, vector<double>(n));
-        vector<vector<double> > P1(n, vector<double>(n));
-        vector<vector<double> > P2(n, vector<double>(n));
-        vector<vector<double> > P3(n, vector<double>(n));
-        vector<vector<double> > P4(n, vector<double>(n));
-        vector<vector<double> > P5(n, vector<double>(n));
-        vector<vector<double> > P6(n, vector<double>(n));
-        vector<vector<double> > P7(n, vector<double>(n));
-        vector<vector<double> > AResultant(n, vector<double>(n));
-        vector<vector<double> > BResultant(n, vector<double>(n));
+        vector<vector<double> > A11(divide_, vector<double>(divide_));
+        vector<vector<double> > A12(divide_, vector<double>(divide_));
+        vector<vector<double> > A21(divide_, vector<double>(divide_));
+        vector<vector<double> > A22(divide_, vector<double>(divide_));
+        vector<vector<double> > B11(divide_, vector<double>(divide_));
+        vector<vector<double> > B12(divide_, vector<double>(divide_));
+        vector<vector<double> > B21(divide_, vector<double>(divide_));
+        vector<vector<double> > B22(divide_, vector<double>(divide_));
+        vector<vector<double> > C11(divide_, vector<double>(divide_));
+        vector<vector<double> > C12(divide_, vector<double>(divide_));
+        vector<vector<double> > C21(divide_, vector<double>(divide_));
+        vector<vector<double> > C22(divide_, vector<double>(divide_));
+        vector<vector<double> > P1(divide_, vector<double>(divide_));
+        vector<vector<double> > P2(divide_, vector<double>(divide_));
+        vector<vector<double> > P3(divide_, vector<double>(divide_));
+        vector<vector<double> > P4(divide_, vector<double>(divide_));
+        vector<vector<double> > P5(divide_, vector<double>(divide_));
+        vector<vector<double> > P6(divide_, vector<double>(divide_));
+        vector<vector<double> > P7(divide_, vector<double>(divide_));
+        vector<vector<double> > AResultant(divide_, vector<double>(divide_));
+        vector<vector<double> > BResultant(divide_, vector<double>(divide_));
         
         for (i = 0; i < divide_; i++)        {
             for (j = 0; j < divide_; j++) {
@@ -572,7 +573,7 @@ Matrix Matrix::inverse()
 {
     double det = this->determinant();
 
-    if( fabs(det) < 0.01)
+    if( fabs(det) < 0.00001)
     {
         cout << "Matrix is not invertible!" << endl;
     }
@@ -605,10 +606,74 @@ Matrix Matrix::inverse()
                 }
             }
             cofdet = cof.determinant();
-            inv.mat[i][j] = (fabs(cofdet) < 0.1 ? 0 : sign) * cofdet / det;
+            inv.mat[i][j] = (fabs(cofdet) < 0.000001 ? 0 : sign) * cofdet / det;
         }
     }
     return inv.transpose();
+}
+
+//------------------------------------------------------------------
+//           Function to find the Gauss Joardan Elimination              
+//------------------------------------------------------------------
+
+void Matrix::gauss_joardan_elimination(){
+
+    double d;
+     
+    for (int i = 0; i < rows; i++)
+    {
+        
+
+        for (int j = 0; j < rows; j++)
+            if (j != i){
+                
+                //cout<<mat[i][j]<<" "<<j<<endl;
+                d = mat[j][i] / mat[i][i];
+                //cout<<d<<endl;
+                for (int k = 0; k < cols; k++){
+
+                    mat[j][k] -= mat[i][k] * d;
+
+                }
+            }
+
+    }
+        
+    for (int i = 0; i < rows; i++){
+
+        d = mat[i][i];
+        for (int j = 0; j < cols; j++)
+            mat[i][j] = mat[i][j] / d;
+    }
+
+}
+
+//------------------------------------------------------------------
+//           Function to find the Gauss Joardan Inverse              
+//------------------------------------------------------------------
+
+
+Matrix Matrix::gauss_joardan_inverse(){
+
+    Matrix identity(rows, cols, 0.0), inverse(rows, cols, 0.0);
+    
+    for(int i = 0; i < rows; ++i){
+        identity.mat[i][i] = 1.0;
+    }
+
+    Matrix joardan_matrix = horzcat(identity);
+
+    joardan_matrix.gauss_joardan_elimination();
+
+    for(int i = 0; i < rows; ++i){
+
+        for(int j = 0; j < cols; ++j){
+            inverse.mat[i][j] = joardan_matrix.mat[i][j+cols];
+        }
+    }
+
+    return inverse;
+
 }
 
 

@@ -7,4 +7,3 @@
  - QR decomposition
  - Gaussian Elimination
  - Gauss - Joardan Elimination
- - pivoting and partial pivoting and no pivoting
