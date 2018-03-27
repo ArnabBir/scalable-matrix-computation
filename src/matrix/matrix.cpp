@@ -402,6 +402,13 @@ void strassen(vector<vector<double> > A, vector<vector<double> > B, vector<vecto
     if(n== 1) {
         C[0][0] = A[0][0] * B[0][0];
     }
+    else if(n <= 32){
+        for(int i = 0; i < n; ++i){
+            for(int j = 0; j < n; ++j){
+                C[i][j] += A[i][j]*B[i][j];
+            }
+        }
+    }
     else{
         int divide_  =(n/2),i,j;
         vector<vector<double> > A11(divide_, vector<double>(divide_));
