@@ -89,7 +89,7 @@ void Matrix::display_matrix()
 }
 
 //------------------------------------------------------------------
-//           Function to perform deep copy of matrix             
+//           Function to perform copy constructor of a matrix             
 //-----------------------------------------------------------------
 Matrix Matrix::copy()
 {
