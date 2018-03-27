@@ -12,12 +12,12 @@ using namespace std;
 
 int main(){
     
-    Matrix  m1(100, 100, 0);
+    Matrix  m1(1000, 1000, 0);
     m1.randomize();
     cout<<"Matrix 1 : "<<endl;
     //m1.display_matrix();
 
-    Matrix  m2(100, 100, 0);
+    Matrix  m2(1000, 1000, 0);
     m2.randomize();
     cout<<"Matrix 2 : "<<endl;
     //m2.display_matrix();

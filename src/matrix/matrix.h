@@ -13,6 +13,7 @@ public:
     Matrix(int, int, double = 0);
     void randomize(void);
     void read_matrix(void);
+    void identity();
     void display_matrix(void);
     Matrix copy();
     Matrix transpose();
@@ -30,6 +31,7 @@ public:
     void pivot_rearrange(int *, Matrix &);
     void update_leading_0s(int *, Matrix);
     Matrix strassen_multiply(Matrix);
+    Matrix strassen_inverse();
     void gauss_joardan_elimination();
     void LU(Matrix &, Matrix &);
     void LU_(Matrix &, Matrix &);
