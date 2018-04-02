@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include "vector.cpp"
 
 using namespace std;
 
@@ -35,5 +36,8 @@ public:
     void gauss_joardan_elimination();
     void LU(Matrix &, Matrix &);
     void LU_(Matrix &, Matrix &);
+    void compute_minor(Matrix & , int);
+    void extract_column(Vector &, int);
+    void householder(Matrix &, Matrix &);
 
 }; 
