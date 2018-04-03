@@ -33,6 +33,7 @@ public:
     void update_leading_0s(int *, Matrix);
     Matrix strassen_multiply(Matrix);
     Matrix strassen_inverse();
+    Matrix strassen_inverse_strassen_multiplication();
     void gauss_joardan_elimination();
     void LU(Matrix &, Matrix &);
     void LU_(Matrix &, Matrix &);
