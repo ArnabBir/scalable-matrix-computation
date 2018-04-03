@@ -9,84 +9,74 @@
 
 class Vector {
  
-public:
-  // default constructor (don't allocate)
-  Vector() : size(0), data(NULL) {}
+  public:
+
+    Vector() : size(0), data(NULL) {}
  
-  // constructor with memory allocation, initialized to zero
-  Vector(int size_) : Vector() {
-    size = size_;
-    allocate(size_);
-  }
- 
-  // destructor
-  ~Vector() {
-    deallocate();
-  }
- 
-  // access data operators
-  double & operator() (int i) {
-    return data[i]; }
-  double  operator() (int i) const {
-    return data[i]; }
- 
-  // operator assignment
-  Vector& operator=(const Vector& source) {
- 
-    // self-assignment check
-    if (this != &source) { 
-      if ( size != (source.size) ) {   // storage cannot be reused
-	allocate(source.size);         // re-allocate storage
-      }
-      // storage can be used, copy data
-      std::copy(source.data, source.data + source.size, data);
+    Vector(int size_) : Vector() {
+      size = size_;
+      allocate(size_);
     }
-    return *this;
-  }
  
-  // memory allocation
-  void allocate(int size_) {
+    ~Vector() {
+      deallocate();
+    }
  
-    deallocate();
+    double & operator() (int i) {
+      return data[i]; }
+    double  operator() (int i) const {
+      return data[i]; }
  
-    // new sizes
-    size = size_;
+    Vector& operator=(const Vector& source) {
  
-    data = new double[size_];
-    memset(data,0,size_*sizeof(double));
+
+      if (this != &source) { 
+        if ( size != (source.size) ) {  
+	        allocate(source.size);         
+        }
+
+        std::copy(source.data, source.data + source.size, data);
+      }
+      return *this;
+    }
  
-  } // allocate
+    void allocate(int size_) {
  
-  // memory free
-  void deallocate() {
+      deallocate();
  
-    if (data)
-      delete[] data;
+      size = size_;
+      data = new double[size_];
+      memset(data,0,size_*sizeof(double));
  
-    data = NULL;
+    }
  
-  }    
+    void deallocate() {
  
-  //   ||x||
-  double norm() {
-    double sum = 0;
-    for (int i = 0; i < size; i++) sum += (*this)(i) * (*this)(i);
-    return sqrt(sum);
-  }
+      if (data)
+        delete[] data;
  
-  // divide data by factor
-  void rescale(double factor) {
-    for (int i = 0; i < size; i++) (*this)(i) /= factor;
-  }
+      data = NULL;
  
-  void rescale_unit() {
-    double factor = norm();
-    rescale(factor);
-  }
+    }    
  
-  int size;
+    double norm() {
+      double sum = 0;
+      for (int i = 0; i < size; i++) sum += (*this)(i) * (*this)(i);
+      return sqrt(sum);
+    }
  
-private:
-  double* data;
+    void rescale(double factor) {
+      for (int i = 0; i < size; i++) (*this)(i) /= factor;
+    }
+ 
+    void rescale_unit() {
+      double factor = norm();
+      rescale(factor);
+    }
+ 
+    int size;
+ 
+  private:
+    double* data;
  
 };

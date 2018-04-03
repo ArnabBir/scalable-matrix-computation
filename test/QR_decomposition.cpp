@@ -7,19 +7,19 @@ using namespace std;
 
 int main(){
     
-    Matrix  m(10, 10, 0.0), L(10, 10, 0.0), U(10, 10, 0.0);
+    Matrix  m(10, 10, 0.0), R(10, 10, 0.0), Q(10, 10, 0.0);
     m.randomize();
     cout<<"Matrix 1 : "<<endl;
     m.display_matrix();
 
-    m.householder(L, U);
+    m.QR(R, Q);
     cout<<"Decomposed R matrix : "<<endl;
-    L.display_matrix();
+    R.display_matrix();
 
     cout<<"Decomposed Q matrix : "<<endl;
-    U.display_matrix();
+    Q.display_matrix();
 
-    Matrix product = L.multiply(U);
+    Matrix product = Q.multiply(R);
 
     cout<<"Product matrix : "<<endl;
     product.display_matrix();

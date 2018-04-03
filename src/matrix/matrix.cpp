@@ -828,32 +828,34 @@ Matrix Matrix::inverse()
     Matrix inv( rows, cols);
     Matrix cof( rows - 1, cols - 1);
 
-    for(i = 0; i < rows; i++)
-    {
-        for(j = 0; j < cols; j++)
-        {
+    for(i = 0; i < rows; i++)   {
+
+        for(j = 0; j < cols; j++)   {
+
             sign = ((i+j)%2 ? -1 : 1);
             r = 0, s = 0;
-            for(p = 0; p < rows; p++)
-            {
-                for(q = 0; q < cols; q++)
-                {
-                    if(p != i && q != j)
-                    {
+            for(p = 0; p < rows; p++)   {
+
+                for(q = 0; q < cols; q++)   {
+
+                    if(p != i && q != j)    {
+
                         cof.mat[r][s] = mat[p][q];
-                        s++;
-                        if(s > cols-2)
-                            {
-                                r++;
+                        ++s;
+
+                        if(s > cols-2)  {
+                                ++r;
                                 s = 0;
                             }
                     }
                 }
             }
+            
             cofdet = cof.determinant();
             inv.mat[i][j] = (fabs(cofdet) < 0.000001 ? 0 : sign) * cofdet / det;
         }
     }
+    
     return inv.transpose();
 }
 
@@ -925,43 +927,43 @@ Matrix Matrix::gauss_joardan_inverse(){
 //           Function for LU decomposition              
 //------------------------------------------------------------------
 
-void Matrix::LU(Matrix & L, Matrix & U){
+// void Matrix::LU(Matrix & L, Matrix & U){
 
-    for (int i = 0; i < rows; i++) {
+//     for (int i = 0; i < rows; i++) {
 
-        for (int j = 0; j < rows; j++){
+//         for (int j = 0; j < rows; j++){
 
-            if (j < i)
-                L.mat[j][i] = 0;
-            else{
+//             if (j < i)
+//                 L.mat[j][i] = 0;
+//             else{
 
-                L.mat[j][i] = mat[j][i];
-                for (int k = 0; k < i; k++){
+//                 L.mat[j][i] = mat[j][i];
+//                 for (int k = 0; k < i; k++){
 
-                    L.mat[j][i] = L.mat[j][i] - L.mat[j][k] * L.mat[k][i];
-                }
-            }
-        }
+//                     L.mat[j][i] = L.mat[j][i] - L.mat[j][k] * L.mat[k][i];
+//                 }
+//             }
+//         }
 
-        for (int j = 0; j < rows; j++){
+//         for (int j = 0; j < rows; j++){
 
-            if (j < i)
-                U.mat[i][j] = 0;
-            else if (j == i)
-                U.mat[i][j] = 1;
-            else{
+//             if (j < i)
+//                 U.mat[i][j] = 0;
+//             else if (j == i)
+//                 U.mat[i][j] = 1;
+//             else{
 
-                U.mat[i][j] = mat[i][j] / L.mat[i][i];
-                for (int k = 0; k < i; k++){
+//                 U.mat[i][j] = mat[i][j] / L.mat[i][i];
+//                 for (int k = 0; k < i; k++){
                     
-                    U.mat[i][j] = U.mat[i][j] - ((L.mat[i][k] * U.mat[k][j]) / L.mat[i][i]);
-                }
-            }
-        }
-    }
-}
+//                     U.mat[i][j] = U.mat[i][j] - ((L.mat[i][k] * U.mat[k][j]) / L.mat[i][i]);
+//                 }
+//             }
+//         }
+//     }
+// }
 
-void Matrix::LU_(Matrix & L, Matrix & U){
+void Matrix::LU(Matrix & L, Matrix & U){
 
     double sum;
 
@@ -987,6 +989,10 @@ void Matrix::LU_(Matrix & L, Matrix & U){
 
 }
 
+//------------------------------------------------------------------
+//           Function for QR decomposition              
+//------------------------------------------------------------------
+
   void Matrix::compute_minor(Matrix & mat_, int d) {
 
  
@@ -1000,93 +1006,77 @@ void Matrix::LU_(Matrix & L, Matrix & U){
 
 void Matrix::extract_column(Vector & v, int c) {
   
-  if (rows != v.size) {
-    std::cerr << "[Matrix::extract_column]: Matrix and Vector sizes don't match\n";
-    return;
-  }
+    if (rows != v.size) {
+        std::cerr << "[Matrix::extract_column]: Matrix and Vector sizes don't match\n";
+        return;
+    }
  
-  for (int i = 0; i < rows; i++)
-    v(i) = mat[i][c];
+    for (int i = 0; i < rows; i++)
+        v(i) = mat[i][c];
 }
 
 void vmadd(const Vector & a, const Vector & b, double s, Vector & c){
  
-  for (int i = 0; i < c.size; i++)
-    c(i) = a(i) + s * b(i);
+    for (int i = 0; i < c.size; i++)
+        c(i) = a(i) + s * b(i);
 }
 
-void compute_householder_factor(Matrix & mat_, const Vector & v)
-{
+void compute_householder_factor(Matrix & mat_, const Vector & v)    {
  
-  int n = v.size;
+    int n = v.size;
 
-  for (int i = 0; i < n; i++)
-    for (int j = 0; j < n; j++)
-      mat_.mat[i][j] = -2 *  v(i) * v(j);
+    for (int i = 0; i < n; i++)
+        for (int j = 0; j < n; j++)
+        mat_.mat[i][j] = -2 *  v(i) * v(j);
 
-  for (int i = 0; i < n; i++)
-    mat_.mat[i][i] += 1;  
+    for (int i = 0; i < n; i++)
+        mat_.mat[i][i] += 1;  
 }
  
-void Matrix::householder(Matrix & R, Matrix & Q)  {
+void Matrix::QR(Matrix & R, Matrix & Q)  {
  
-  int m = rows;
-  int n = cols;
+    int m = rows;
+    int n = cols;
  
-  // array of factor Q1, Q2, ... Qm
-  vector<Matrix> qv(m);
+    vector<Matrix> qv(m);
  
-  // temp array
-  Matrix z = * this;
-  Matrix z1(m, n, 0.0);
+    Matrix z = * this;
+    Matrix z1(m, n, 0.0);
  
-  for (int k = 0; k < n && k < m - 1; k++) {
+    for (int k = 0; k < n && k < m - 1; k++) {
  
-    Vector e(m), x(m);
-    double a;
+        Vector e(m), x(m);
+        double a;
  
-    // compute minor
-    //cout<<"hello"<<endl;
-    //z.display_matrix();
-    cout<<"----------"<<endl;
-    z1.compute_minor(z, k);
-    //z1.display_matrix();
+        z1.compute_minor(z, k);
+        z1.extract_column(x, k);
     
-    // extract k-th column into x
-    z1.extract_column(x, k);
-    
-    a = x.norm();
-    if (mat[k][k] > 0) a = -a;
+        a = x.norm();
+        if (mat[k][k] > 0) a = -a;
     
     
-    for (int i = 0; i < e.size; i++)
-      e(i) = (i == k) ? 1 : 0;
+        for (int i = 0; i < e.size; i++)
+            e(i) = (i == k) ? 1 : 0;
  
-    // e = x + a*e
-    vmadd(x, e, a, e);
+        vmadd(x, e, a, e);
     
-    // e = e / ||e||
-    e.rescale_unit();
+        e.rescale_unit();
     
-    // qv[k] = I - 2 *e*e^Tq   
-    qv[k] = Matrix(rows, cols, 0.0);
-    compute_householder_factor(qv[k], e);
-    //qv[k].display_matrix();
-    // z = qv[k] * z1
-    z = qv[k].multiply(z1);
-    z.display_matrix();
-  }
+        qv[k] = Matrix(rows, cols, 0.0);
+        compute_householder_factor(qv[k], e);
+
+        z = qv[k].multiply(z1);
+    }
  
-  Q = qv[0];
+    Q = qv[0];
  
-  // after this loop, we will obtain Q (up to a transpose operation)
-  for (int i = 1; i < n && i < m - 1; i++) {
+    for (int i = 1; i < n && i < m - 1; i++) {
  
-    z1 = qv[i].multiply(Q);
-    Q = z1;
+        z1 = qv[i].multiply(Q);
+        Q = z1;
  
-  }
+    }
  
-  R = Q.multiply(* this);
-  Q = Q.transpose();
+    R = Q.multiply(* this);
+    Q = Q.transpose();
 }
