@@ -12,12 +12,12 @@ using namespace std;
 
 int main(){
     
-    Matrix  m1(1000, 1000, 0);
+    Matrix  m1(2000, 2000, 0);
     m1.randomize();
     cout<<"Matrix 1 : "<<endl;
     //m1.display_matrix();
 
-    Matrix  m2(1000, 1000, 0);
+    Matrix  m2(2000, 2000, 0);
     m2.randomize();
     cout<<"Matrix 2 : "<<endl;
     //m2.display_matrix();
@@ -25,7 +25,6 @@ int main(){
     //matmul multiplier = matmul(true);
     int start_naive_multiplication = clock();
     Matrix m = m1.multiply(m2);
-    //sleep(1);
     int stop_naive_multiplication = clock();
     
     //sleep(1);

@@ -417,7 +417,9 @@ void strassen(vector<vector<double> > A, vector<vector<double> > B, vector<vecto
     else if(n <= 32){
         for(int i = 0; i < n; ++i){
             for(int j = 0; j < n; ++j){
-                C[i][j] += A[i][j]*B[i][j];
+                for(int k = 0; k < n; ++k){
+                    C[i][j] += A[i][k]*B[k][j];
+                }
             }
         }
     }
@@ -729,15 +731,34 @@ void inv_strassen_mul_strassen(Matrix A, Matrix & C, int n) {
         
         inv_strassen_mul_strassen(A11, P1, divide_);   // P1 = inv(A11)
         //P1 = A11.strassen_inverse(); // TEST
+        
         P2 = A21.strassen_multiply(P1);  // P2 = A21 * PI
         P3 = P1.strassen_multiply(A12);  // P3 = P1 * A12
         P4 = A21.strassen_multiply(P3);  // P4 = A21 * P3
+
+        //strassen(A21.mat, P1.mat, P2.mat, divide_);
+        //strassen(P1.mat, A12.mat, P3.mat, divide_);
+        //strassen(A21.mat, P3.mat, P4.mat, divide_);
+        
+        //P2 = A21.multiply(P1);  // P2 = A21 * PI
+        //P3 = P1.multiply(A12);  // P3 = P1 * A12
+        //P4 = A21.multiply(P3);  // P4 = A21 * P3
+        
         substract_matrix(P4.mat, A22.mat, P5.mat, divide_);  // P5 = P4 - A22
         inv_strassen_mul_strassen(P5, P6, divide_);  // P6 = inv(P5)
         //P6 = P5.strassen_inverse();
         C12 = P3.strassen_multiply(P6);   // C12 = P3 * P6
         C21 = P6.strassen_multiply(P2);   // C21 = P4 * P2
         P7 = P3.strassen_multiply(C21);   // P7 = P3 * C21
+
+        //strassen(P3.mat, P6.mat, C12.mat, divide_);
+        //strassen(P6.mat, P2.mat, C21.mat, divide_);
+        //strassen(P3.mat, C21.mat, P7.mat, divide_);
+
+        //C12 = P3.multiply(P6);   // C12 = P3 * P6
+        //C21 = P6.multiply(P2);   // C21 = P4 * P2
+        //P7 = P3.multiply(C21);   // P7 = P3 * C21
+
         substract_matrix(P1.mat, P7.mat, C11.mat, divide_);  // C11 = P1 - P7        
         substract_matrix(Matrix(divide_, divide_, 0.0).mat, P6.mat, C22.mat, divide_);  // C22 = - P6
 
