@@ -409,7 +409,7 @@ void substract_matrix(vector<vector<double> > A, vector<vector<double> > B, vect
 
 }
 
-void strassen(vector<vector<double> > A, vector<vector<double> > B, vector<vector<double> > & C, int n) {
+void strassenUtil(vector<vector<double> > A, vector<vector<double> > B, vector<vector<double> > & C, int n) {
 
     if(n== 1) {
         C[0][0] = A[0][0] * B[0][0];
@@ -467,27 +467,27 @@ void strassen(vector<vector<double> > A, vector<vector<double> > B, vector<vecto
         
         add_matrix(A11, A22, AResultant, divide_);   // A11 + A22
         add_matrix(B11, B22, BResultant, divide_);   // B11 + B22
-        strassen(AResultant, BResultant, P1, divide_);  // P1 = (A11+A22) * (B11+B22)
+        strassenUtil(AResultant, BResultant, P1, divide_);  // P1 = (A11+A22) * (B11+B22)
         
         add_matrix(A21, A22, AResultant, divide_);   // A21 + A22
-        strassen(AResultant, B11, P2, divide_); // P2 = (A21+A22) * (B11)
+        strassenUtil(AResultant, B11, P2, divide_); // P2 = (A21+A22) * (B11)
         
         substract_matrix(B12, B22, BResultant, divide_); // B12 - B22
-        strassen(A11, BResultant, P3, divide_); // P3 = (A11) * (B12 - B22)
+        strassenUtil(A11, BResultant, P3, divide_); // P3 = (A11) * (B12 - B22)
         
         substract_matrix(B21, B11, BResultant, divide_); // B21 - B11
-        strassen(A22, BResultant, P4, divide_); // P4 = (A22) * (B21 - B11)
+        strassenUtil(A22, BResultant, P4, divide_); // P4 = (A22) * (B21 - B11)
         
         add_matrix(A11, A12, AResultant, divide_); // A11 + A12
-        strassen(AResultant, B22, P5, divide_); // P5 = (A11+A12) * (B22)
+        strassenUtil(AResultant, B22, P5, divide_); // P5 = (A11+A12) * (B22)
         
         substract_matrix(A21, A11, AResultant, divide_); // A21 - A11
         add_matrix(B11, B12, BResultant, divide_); // B11 + B12
-        strassen(AResultant, BResultant, P6, divide_); // p6 = (A21-A11) * (B11+B12)
+        strassenUtil(AResultant, BResultant, P6, divide_); // p6 = (A21-A11) * (B11+B12)
         
         substract_matrix(A12, A22, AResultant, divide_); // A12 - A22
         add_matrix(B21, B22, BResultant, divide_); // B21 + B22
-        strassen(AResultant, BResultant, P7, divide_); // P7 = (A12-A22) * (B21+B22)
+        strassenUtil(AResultant, BResultant, P7, divide_); // P7 = (A12-A22) * (B21+B22)
         
         
         add_matrix(P3, P5, C12, divide_); // C12 = P3 + P5
@@ -530,7 +530,7 @@ Matrix Matrix::strassen_multiply(Matrix m2){
             count_rows = pow(2.0,cont+1);
     }}
 
-    strassen(mat, m2.mat, m.mat, count_rows);
+    strassenUtil(mat, m2.mat, m.mat, count_rows);
     
     return m; 
 }
@@ -580,6 +580,107 @@ Matrix Matrix::strassen_multiply(Matrix m2){
 //     return m; 
 // }
 
+void DnCUtil(vector<vector<double> > A, vector<vector<double> > B, vector<vector<double> > & C, int n) {
+
+    if(n== 1) {
+        C[0][0] = A[0][0] * B[0][0];
+    }
+    else if(n <= 32){
+        for(int i = 0; i < n; ++i){
+            for(int j = 0; j < n; ++j){
+                for(int k = 0; k < n; ++k){
+                    C[i][j] += A[i][k]*B[k][j];
+                }
+            }
+        }
+    }
+    else{
+        int divide_  =(n/2),i,j;
+        vector<vector<double> > A11(divide_, vector<double>(divide_));
+        vector<vector<double> > A12(divide_, vector<double>(divide_));
+        vector<vector<double> > A21(divide_, vector<double>(divide_));
+        vector<vector<double> > A22(divide_, vector<double>(divide_));
+
+        vector<vector<double> > B11(divide_, vector<double>(divide_));
+        vector<vector<double> > B12(divide_, vector<double>(divide_));
+        vector<vector<double> > B21(divide_, vector<double>(divide_));
+        vector<vector<double> > B22(divide_, vector<double>(divide_));
+        
+        vector<vector<double> > C11(divide_, vector<double>(divide_));
+        vector<vector<double> > C12(divide_, vector<double>(divide_));
+        vector<vector<double> > C21(divide_, vector<double>(divide_));
+        vector<vector<double> > C22(divide_, vector<double>(divide_));
+        
+        vector<vector<double> > P1(divide_, vector<double>(divide_));
+        vector<vector<double> > P2(divide_, vector<double>(divide_));
+        vector<vector<double> > P3(divide_, vector<double>(divide_));
+        vector<vector<double> > P4(divide_, vector<double>(divide_));
+        vector<vector<double> > P5(divide_, vector<double>(divide_));
+        vector<vector<double> > P6(divide_, vector<double>(divide_));
+        vector<vector<double> > P7(divide_, vector<double>(divide_));
+        vector<vector<double> > P8(divide_, vector<double>(divide_));
+        
+        for (i = 0; i < divide_; i++)        {
+            for (j = 0; j < divide_; j++) {
+                A11[i][j] = A[i][j];
+                A12[i][j] = A[i][j + divide_];
+                A21[i][j] = A[i + divide_][j];
+                A22[i][j] = A[i + divide_][j + divide_];
+                
+                B11[i][j] = B[i][j];
+                B12[i][j] = B[i][j + divide_];
+                B21[i][j] = B[i + divide_][j];
+                B22[i][j] = B[i + divide_][j + divide_];
+            }
+        }
+        
+        DnCUtil(A11, B11, P1, divide_);  // P1 = (A11+A22) * (B11+B22)
+        DnCUtil(A12, B21, P2, divide_);
+        DnCUtil(A11, B12, P3, divide_);
+        DnCUtil(A12, B22, P4, divide_);
+        DnCUtil(A21, B11, P5, divide_);
+        DnCUtil(A22, B21, P6, divide_);
+        DnCUtil(A21, B12, P7, divide_);
+        DnCUtil(A22, B22, P8, divide_);
+
+        add_matrix(P1, P2, C11, divide_);
+        add_matrix(P3, P4, C12, divide_);        
+        add_matrix(P5, P6, C21, divide_);
+        add_matrix(P7, P8, C22, divide_);
+
+        for (i = 0; i < divide_ ; i++)   {
+            for (j = 0 ; j < divide_ ; j++)  {
+                C[i][j] = C11[i][j];
+                C[i][j + divide_] = C12[i][j];
+                C[i + divide_][j] = C21[i][j];
+                C[i + divide_][j + divide_] = C22[i][j];
+            }
+        }
+    }
+}
+
+Matrix Matrix::DnC_multiply(Matrix m2){
+
+    Matrix m(rows, cols, 0.0);
+    int rows_ = nextPowerOf2(rows);
+
+    int dim = rows, count_rows = rows, cont = 0;
+    
+    if(dim > 1) {
+         while(dim>=2) {
+             dim/=2;
+             cont++;
+        }
+        
+        dim = count_rows;
+        if(dim != (pow(2.0,cont))) {
+            count_rows = pow(2.0,cont+1);
+    }}
+
+    DnCUtil(mat, m2.mat, m.mat, count_rows);
+    
+    return m; 
+}
 
 //----------------------------------------------------------------------------------
 //           Multiply matrices using strassen's algorithm and naive multiplication         
@@ -990,10 +1091,60 @@ void Matrix::LU(Matrix & L, Matrix & U){
 }
 
 //------------------------------------------------------------------
+//           Function for LU inversion              
+//------------------------------------------------------------------
+
+Matrix Matrix::inverse_LU(){
+
+    Matrix  L(rows, cols, 0.0), U(rows, cols, 0.0), RHS(rows, cols, 0.0), Z(rows, cols, 0.0), result(rows, cols, 0.0);
+    
+    LU(L, U);
+
+    double sum;
+
+    RHS.identity();
+
+    for(int i = 0; i < rows; ++i){
+
+        for(int j = 0; j < rows; ++j){
+            
+            sum = RHS.mat[j][i];
+
+            for(int k = 0; k < j; ++k)  {
+
+                sum -= Z.mat[k][i] * L.mat[j][k];
+            }
+            Z.mat[j][i] = sum / L.mat[j][j];
+            //cout<<Z.mat[j][i]<<endl;
+        }
+    }
+
+    //Z.display_matrix();
+    
+    for(int i = 0; i < rows; ++i){
+
+        for(int j = rows-1; j >= 0; --j){
+            
+            sum = Z.mat[j][i];
+
+            for(int k = cols-1; k > j; --k)  {
+
+                sum -= result.mat[k][i] * U.mat[j][k];
+            }
+            result.mat[j][i] = sum;
+        }
+    }
+
+    return result;
+    
+}
+
+
+//------------------------------------------------------------------
 //           Function for QR decomposition              
 //------------------------------------------------------------------
 
-  void Matrix::compute_minor(Matrix & mat_, int d) {
+void Matrix::compute_minor(Matrix & mat_, int d) {
 
  
     for (int i = 0; i < d; i++)  mat[i][i] = 1.0;
@@ -1002,7 +1153,7 @@ void Matrix::LU(Matrix & L, Matrix & U){
         mat[i][j] = mat_.mat[i][j];
       }
     }
-  }
+}
 
 void Matrix::extract_column(Vector & v, int c) {
   

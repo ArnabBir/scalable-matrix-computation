@@ -32,10 +32,12 @@ public:
     void pivot_rearrange(int *, Matrix &);
     void update_leading_0s(int *, Matrix);
     Matrix strassen_multiply(Matrix);
+    Matrix DnC_multiply(Matrix);
     Matrix strassen_inverse();
     Matrix strassen_inverse_strassen_multiplication();
     void gauss_joardan_elimination();
     void LU(Matrix &, Matrix &);
+    Matrix inverse_LU();
     //void LU_(Matrix &, Matrix &);
     void compute_minor(Matrix & , int);
     void extract_column(Vector &, int);

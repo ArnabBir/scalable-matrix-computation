@@ -36,10 +36,10 @@ int main(){
     //sleep(1);
 
     int start_strassen_multiply = clock();
-    Matrix m_ = m1.strassen_multiply(m2);
+    Matrix m_ = m1.DnC_multiply(m2);
     int stop_strassen_multiply = clock();
     
-    cout<<"Strassen Product Matrix : "<<endl;
+    cout<<"DnC Product Matrix : "<<endl;
     //m_.display_matrix();
     cout<<start_strassen_multiply<<" "<<stop_strassen_multiply<<endl;
     cout<<"Time = "<<(stop_strassen_multiply - start_strassen_multiply)/double(CLOCKS_PER_SEC)*1000<<endl;
