@@ -1,5 +1,7 @@
 #include <iostream>
 #include <vector>
+#include <sys/time.h> 
+#include <sys/resource.h>
 #include "vector.cpp"
 
 using namespace std;

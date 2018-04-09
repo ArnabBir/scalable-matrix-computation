@@ -6,6 +6,8 @@
 
 using namespace std;
 
+struct rusage usage;
+
 int nextPowerOf2(int n)
 {
     return pow(2, int(ceil(log2(n))));
@@ -380,6 +382,7 @@ Matrix Matrix::multiply(Matrix other)
         {
             for(k = 0; k < this-> cols; k++)
             {
+                
                 product.mat[i][j] += this->mat[i][k] * other.mat[k][j];
             }
         }
