@@ -26,15 +26,17 @@ int main(){
     cout<<"Decomposed U matrix : "<<endl;
     U.display_matrix();
 
-    Matrix product = m.gauss_joardan_inverse();
+    // Matrix product = m.gauss_joardan_inverse();
 
-    cout<<"Inverse matrix : "<<endl;
-    product.display_matrix();
+    // cout<<"Inverse matrix : "<<endl;
+    // product.display_matrix();
 
 
     Matrix inv = m.inverse_LU();
     cout<<"Inverse matrix : "<<endl;
     inv.display_matrix();
+
+    m.multiply(inv).display_matrix();
 
     return 0;
 }

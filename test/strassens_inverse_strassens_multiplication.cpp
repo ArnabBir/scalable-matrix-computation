@@ -13,7 +13,7 @@ using namespace std;
 
 int main(){
     
-    Matrix  m(64, 64, 0);
+    Matrix  m(2048, 2048, 0);
     m.randomize();
     //cout<<"Matrix 1 : "<<endl;
     //m.display_matrix();
@@ -21,7 +21,7 @@ int main(){
     struct rusage usage;
 
     int start_naive_multiplication = clock();
-    m = m.gauss_joardan_inverse();
+    m = m.strassen_inverse_strassen_multiplication();
     int stop_naive_multiplication = clock();   
     
     getrusage(RUSAGE_SELF, &usage);

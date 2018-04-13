@@ -732,7 +732,6 @@ void inv_strassen(Matrix A, Matrix & C, int n) {
             }
         }
         
-        cout<<divide_<<endl;
         inv_strassen(A11, P1, divide_);   // P1 = inv(A11)
         //P1 = A11.strassen_inverse(); // TEST
         P2 = A21.multiply(P1);  // P2 = A21 * PI
